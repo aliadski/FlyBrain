@@ -107,9 +107,12 @@ class Acople:
         # orientación de su grilla, todo el acople quedaría girado sin avisar.
         assert np.allclose(cal, [(-1, 0), (1, 0), (0, 1), (0, -1)]), \
             f"la calibración de T5 cambió: {cal.tolist()}; rehacer el mapa"
-        if lado == "R":
-            M = np.load(DATOS / "mapa_malecns_flyvis.npy")
+        guardado = DATOS / "mapa_malecns_flyvis.npy"
+        if lado == "R" and guardado.exists():
+            M = np.load(guardado)
         else:
+            # Sin el mapa validado a mano (no está en el repo: `data/` no se
+            # versiona), el derecho sale del mismo ajuste que el izquierdo.
             M, error = mapa(red, H, lado, cal)
             assert error.max() < 30, f"la cruz de LPLC2 del ojo {lado} no cierra: {error.round()}"
 
