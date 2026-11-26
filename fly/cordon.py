@@ -284,6 +284,9 @@ def main():
     tipos = np.unique(red.tipo[dn])
     print(f"subred de las patas delanteras: {idx.size:,} neuronas · {tipos.size} tipos de descendente\n")
     semillas = (0, 1)
+    # El caché de volúmenes se arma acá y no en cada proceso: si no existe, los
+    # tres bajarían los 4,6 GB al mismo archivo temporal y se lo borrarían entre sí.
+    tamanos(red)
     with Pool(3) as pool:
         filas = pool.map(_tamiz, [(s, tipos[k::3]) for s in semillas for k in range(3)])
     score = np.full((len(semillas), tipos.size), np.nan)
